@@ -9,7 +9,7 @@ description: |
   (4) 解析已有 HTML 提取结构化数据
   (5) 用户提供 URL 并要求获取页面内容或特定元素
   (6) 批量采集多个页面
-allowed-tools: Bash(python*), Bash(pip*), Bash(scrapling*)
+allowed-tools: Bash(python*), Bash(pip*), Bash(uv*), Bash(scrapling*)
 ---
 
 # Scrapling 网页抓取 Skill
@@ -17,12 +17,16 @@ allowed-tools: Bash(python*), Bash(pip*), Bash(scrapling*)
 ## 步骤 0：检查版本
 
 ```bash
-pip show scrapling
+python -c "import scrapling; print(scrapling.__version__)"
 ```
 
-- 未安装 → 执行 `pip install "scrapling[fetchers]"` + `scrapling install`
-- 有新版 → 执行 `pip install --upgrade "scrapling[fetchers]"` → 查 changelog 告知用户
+按项目使用的包管理器执行（pip / uv 等价命令见 `references/maintenance.md`）：
+
+- 未安装 → 安装 `scrapling[fetchers]` + `scrapling install`
+- 有新版 → 升级 → 查 changelog 告知用户
 - 已最新 → 继续
+
+> 项目根存在 `uv.lock` 或 `pyproject.toml` 含 `[tool.uv]`，优先用 `uv`（`uv add` / `uv run scrapling install`）；否则用 `pip`。
 
 ## 步骤 1：选择 Fetcher
 
