@@ -23,9 +23,20 @@ Automatically selects the best Fetcher based on target website characteristics, 
 
 #### 1. Install scrapling
 
+Pick whichever package manager your project uses:
+
 ```bash
+# pip
 pip install "scrapling[fetchers]"
 scrapling install  # Install browser dependencies
+
+# uv (project)
+uv add "scrapling[fetchers]"
+uv run scrapling install
+
+# uv (global / standalone, no pyproject.toml)
+uv pip install "scrapling[fetchers]"
+scrapling install
 ```
 
 #### 2. Install this skill
@@ -109,9 +120,20 @@ The `references/cookie-vault.md` file is a **template**. For actual use:
 
 #### 1. 安装 scrapling
 
+按项目所用的包管理器选一种即可：
+
 ```bash
+# pip
 pip install "scrapling[fetchers]"
 scrapling install  # 安装浏览器依赖
+
+# uv（项目内）
+uv add "scrapling[fetchers]"
+uv run scrapling install
+
+# uv（全局 / 独立，无 pyproject.toml）
+uv pip install "scrapling[fetchers]"
+scrapling install
 ```
 
 #### 2. 安装此技能
