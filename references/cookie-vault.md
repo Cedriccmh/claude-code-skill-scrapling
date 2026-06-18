@@ -1,9 +1,10 @@
-# Cookie 保险库
+# Cookie 保险库模板
 
-按站点分区记录历史 cookie，供抓取时快速查找使用。
+按站点分区记录 cookie 字段、来源和格式，供抓取时快速查找使用。
 
-> **安全提示**: 此文件存储敏感 cookie 值，请勿提交到版本控制或分享给他人。
-> 实际使用时，请将此文件复制为 `cookie-vault.local.md` 并填入真实值。
+> **安全提示**: 此文件只存模板和字段名，不存真实 cookie / token。
+> 真实值只能写入本地未提交文件 `cookie-vault.local.md`，且必须先获得用户明确授权。
+> 输出日志、错误报告和 commit diff 中必须 redact 真实值。
 
 ---
 
@@ -18,14 +19,14 @@
 
 ```python
 cookies = [
-    {'name': 'session_id', 'value': '<YOUR_SESSION_ID>', 'domain': '.example.com', 'path': '/'},
-    {'name': 'auth_token', 'value': '<YOUR_AUTH_TOKEN>', 'domain': '.example.com', 'path': '/'},
+    {'name': 'session_id', 'value': '<redacted>', 'domain': '.example.com', 'path': '/'},
+    {'name': 'auth_token', 'value': '<redacted>', 'domain': '.example.com', 'path': '/'},
 ]
 ```
 
 ### 备注
 
-- 从浏览器 DevTools > Application > Cookies 获取真实值
+- 从浏览器 DevTools > Application > Cookies 获取真实值，并写入 `cookie-vault.local.md`
 - cookie 有效期取决于站点设置，过期后需重新获取
 
 ---
@@ -46,11 +47,12 @@ cookies = [
 
 \```python
 cookies = [
-    {'name': 'field1', 'value': '...', 'domain': '.example.com', 'path': '/'},
+    {'name': 'field1', 'value': '<redacted>', 'domain': '.example.com', 'path': '/'},
 ]
 \```
 
 ### 备注
 
 - 相关注意事项
+- 真实值保存位置：`cookie-vault.local.md`
 ```

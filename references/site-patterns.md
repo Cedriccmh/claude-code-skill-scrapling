@@ -1,6 +1,8 @@
 # 站点抓取模式经验库
 
-每次成功抓取新类型站点后，Agent 应提示用户是否将经验追加到此文件。
+每次成功抓取新类型站点后，Agent 应提示用户是否将**去敏感化后的通用经验**追加到此文件。
+
+> 公司内站点、私有 API、登录态细节、CSRF header、真实 cookie 字段或不可公开域名，请写入本地未提交的 `site-patterns.local.md`，不要提交到公共仓库。
 
 ---
 
@@ -53,20 +55,19 @@
 
 ---
 
-## TAPD 项目管理 (tapd.cn)
+## 企业 React SPA + CSRF + 懒加载工作台（泛化模式）
 
-**站点特征**: React SPA + 企业登录态 + 分页懒加载（"展开更多"按钮）
+**站点特征**: React SPA + 企业登录态 + 分页懒加载（例如“展开更多”按钮）
 **推荐方案**: Playwright 直接控制（非 scrapling Fetcher）
-**原因**: DynamicFetcher 可渲染首屏但无法点击交互；scrapling Fetcher 调 API 时 `page.text` 始终为空；curl 可达 API 但返回 500（需浏览器环境的 CSRF 校验）
+**原因**: DynamicFetcher 可渲染首屏但无法点击交互；直接调 API 可能因浏览器环境、CSRF 或 interceptor 校验返回空响应 / 500
 **关键流程**:
 1. Playwright + cookies 加载页面，`wait_until='networkidle'`
 2. 循环点击"展开更多"按钮加载全部数据
 3. `page.inner_text('body')` 提取纯文本，按行解析
-**Cookie 格式**: `list[dict]`，必填 `name/value/domain/path`，domain 为 `.tapd.cn`
-**API 端点**（参考，浏览器内部使用）: `POST /api/my_worktable/my_worktable/get_my_worktable_by_page`
-**CSRF**: cookie `dsc-token` 的值需作为 `DSC-TOKEN` header 发送（由 axios interceptor 自动添加）
-**已知限制**: scrapling Fetcher 对 TAPD API 返回空响应（`page.text` 为空），需用 Playwright 或 curl
-**数据结构**: 文本按行排列，类型前缀(P/E/PROGRAM/TEST/BUG) → 标题 → 状态 → 优先级 → ...
+**Cookie 格式**: `list[dict]`，必填 `name/value/domain/path`
+**CSRF**: 如果站点要求 cookie 中的 CSRF token 同步到 header，优先让真实浏览器 / 页面 interceptor 自动添加
+**已知限制**: 这类站点常需要用户授权、登录态和本地 site pattern；具体域名、API endpoint、cookie 字段写入 `site-patterns.local.md`
+**数据结构**: 常见为文本按行排列，类型前缀 → 标题 → 状态 → 优先级 → ...
 
 ---
 

@@ -8,7 +8,7 @@
 
 A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill for web scraping and data extraction using [scrapling](https://github.com/D4Vinci/Scrapling).
 
-Automatically selects the best Fetcher based on target website characteristics, generates and executes Python scripts.
+Automatically selects the best Fetcher based on target website characteristics, uses Scrapling CLI quick paths for simple extraction, and generates Python scripts when needed.
 
 ### Features
 
@@ -18,6 +18,8 @@ Automatically selects the best Fetcher based on target website characteristics, 
 - **Site Pattern Library** — Reusable patterns for common site types (Discourse, SPA, static blogs, APIs)
 - **Cookie Vault** — Local storage for login cookies with per-site templates
 - **Troubleshooting Guide** — Solutions for common errors indexed by error message
+- **Safety Guardrails** — `references/security.md` covers authorization, Prompt injection, `--ai-targeted`, local cookie vaults, and redaction
+- **Upstream Alignment** — `references/upstream-map.md` keeps this lightweight skill aligned with `D4Vinci/Scrapling` and `scrapling-official`
 
 ### Installation
 
@@ -60,8 +62,10 @@ cp -r . /path/to/project/.claude/skills/scrapling
 │   ├── api-quick-ref.md               # Fetcher/Selector API cheat sheet
 │   ├── cookie-vault.md                # Cookie storage template
 │   ├── maintenance.md                 # Installation & upgrade guide
+│   ├── security.md                    # Authorization, prompt-injection, cookie/token guardrails
 │   ├── site-patterns.md               # Site-specific scraping patterns
-│   └── troubleshooting.md             # Error solutions
+│   ├── troubleshooting.md             # Error solutions
+│   └── upstream-map.md                # Official Scrapling docs/skill sync map
 └── templates/
     ├── basic_fetch.py                 # Static page scraping
     ├── stealth_cloudflare.py          # Cloudflare bypass
@@ -78,6 +82,14 @@ Once installed, Claude Code will automatically activate this skill when you ask 
 - Bypass Cloudflare protection
 - Parse HTML content
 - Login and scrape protected pages
+
+For simple text/Markdown extraction, prefer Scrapling CLI with `--ai-targeted` before writing Python:
+
+```bash
+scrapling extract get "https://example.com/article" article.md --ai-targeted
+scrapling extract fetch "https://example.com/app" app.md --ai-targeted --network-idle
+scrapling extract stealthy-fetch "https://protected.example.com" page.md --ai-targeted --solve-cloudflare
+```
 
 #### Examples
 
@@ -99,13 +111,20 @@ The `references/cookie-vault.md` file is a **template**. For actual use:
 2. Fill in real cookie values from your browser's DevTools
 3. **Never commit real cookie values to version control**
 
+### Local overlays
+
+- Put real cookies/tokens only in `references/cookie-vault.local.md`.
+- Put private company site patterns, internal API details, CSRF notes, and non-public domains only in `references/site-patterns.local.md`.
+- Both local overlay files are ignored by `.gitignore`.
+- Keep public `references/site-patterns.md` generic and scrubbed of secrets.
+
 ---
 
 ## 中文
 
 基于 [scrapling](https://github.com/D4Vinci/Scrapling) 的 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) 网页抓取技能。
 
-根据目标网站特征自动选择最佳 Fetcher，生成并执行 Python 脚本完成抓取任务。
+根据目标网站特征自动选择最佳 Fetcher；简单抽取优先用 Scrapling CLI quick path，复杂流程再生成并执行 Python 脚本。
 
 ### 功能特性
 
@@ -115,6 +134,8 @@ The `references/cookie-vault.md` file is a **template**. For actual use:
 - **站点模式库** — 常见站点类型的可复用抓取模式（Discourse 论坛、SPA、静态博客、API）
 - **Cookie 保险库** — 按站点模板存储登录 cookie
 - **故障排查指南** — 按错误信息索引的常见问题解决方案
+- **安全边界** — `references/security.md` 说明授权、Prompt injection、`--ai-targeted`、本地 cookie vault 与 redaction
+- **上游同步** — `references/upstream-map.md` 说明如何与 `D4Vinci/Scrapling` 和 `scrapling-official` 保持轻量对齐
 
 ### 安装
 
@@ -157,8 +178,10 @@ cp -r . /path/to/project/.claude/skills/scrapling
 │   ├── api-quick-ref.md               # Fetcher/Selector API 速查表
 │   ├── cookie-vault.md                # Cookie 存储模板
 │   ├── maintenance.md                 # 安装与升级指南
+│   ├── security.md                    # 授权、prompt-injection、cookie/token 安全边界
 │   ├── site-patterns.md               # 站点专用抓取模式
-│   └── troubleshooting.md             # 错误解决方案
+│   ├── troubleshooting.md             # 错误解决方案
+│   └── upstream-map.md                # 官方 Scrapling 文档 / skill 同步地图
 └── templates/
     ├── basic_fetch.py                 # 静态页面抓取
     ├── stealth_cloudflare.py          # Cloudflare 绕过
@@ -175,6 +198,14 @@ cp -r . /path/to/project/.claude/skills/scrapling
 - 绕过 Cloudflare 防护
 - 解析 HTML 内容
 - 登录后抓取受保护页面
+
+简单文本 / Markdown 抽取优先使用 Scrapling CLI，并默认加 `--ai-targeted`：
+
+```bash
+scrapling extract get "https://example.com/article" article.md --ai-targeted
+scrapling extract fetch "https://example.com/app" app.md --ai-targeted --network-idle
+scrapling extract stealthy-fetch "https://protected.example.com" page.md --ai-targeted --solve-cloudflare
+```
 
 #### 示例
 
@@ -195,6 +226,13 @@ cp -r . /path/to/project/.claude/skills/scrapling
 1. 复制为 `cookie-vault.local.md`（或在本地 skill 安装目录中保存）
 2. 从浏览器 DevTools 填入真实 cookie 值
 3. **切勿将真实 cookie 值提交到版本控制**
+
+### 本地 overlay
+
+- 真实 cookie / token 只放 `references/cookie-vault.local.md`。
+- 公司内站点模式、内部 API、CSRF 细节、非公开域名只放 `references/site-patterns.local.md`。
+- 这两个 local overlay 文件都已被 `.gitignore` 忽略。
+- 公共 `references/site-patterns.md` 只保留去敏感化后的通用经验。
 
 ## License
 

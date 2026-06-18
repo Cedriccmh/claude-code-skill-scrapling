@@ -53,7 +53,7 @@ cookies = [
 
 **错误信息**: 返回 404，页面提示内容为私有
 **原因**: Cloudflare 已通过，但目标页面需要登录态
-**解决方案**: 带上登录 cookie（从浏览器手动获取），参见 `cookie-vault.md`
+**解决方案**: 带上登录 cookie（从浏览器手动获取）。字段模板见 `cookie-vault.md`；真实 cookie 值只能保存到本地未提交的 `cookie-vault.local.md`，输出时必须 redact
 ```python
 page = StealthyFetcher.fetch(
     url,
